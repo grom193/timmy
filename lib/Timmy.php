@@ -578,7 +578,10 @@ class Timmy {
 			// Sort out background color which will show instead of transparency
 			$bgcolor  = is_string( $img_size['tojpg'] ) ? $img_size['tojpg'] : '#FFFFFF';
 			$file_src = Timber\ImageHelper::img_to_jpg( $file_src, $bgcolor, $force );
-		}
+		} elseif (self::should_convert_to_webp( $img_size, $file_src )) {
+		    $quality = $img_size['towebp'];
+		    $file_src = Timber\ImageHelper::img_to_webp($file_src, $quality, $force);
+        }
 
 		// Check for letterbox parameter
 		if ( isset( $img_size['letterbox'] ) && $img_size['letterbox']
@@ -614,6 +617,30 @@ class Timmy {
 
 		return false;
 	}
+
+    /**
+     * Check if an image should be converted to JPG.
+     *
+     * Checks for the existence of the `tojpg` parameter and whether the image is a PDF. Trying to
+     * convert PDF images will lead to an error, which we need to catch here.
+     *
+     * @since 0.13.2
+     *
+     * @param array  $img_size Configuration values for an image size.
+     * @param string $file_src The src of the original image.
+     *
+     * @return bool Whether the image should be converted.
+     */
+    public static function should_convert_to_webp( $img_size, $file_src ) {
+        if ( isset( $img_size['towebp'] )
+             && $img_size['towebp']
+             && 'application/pdf' !== wp_check_filetype( $file_src )['type']
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 
 	/**
 	 * Get the actual width at which the image will be displayed.
