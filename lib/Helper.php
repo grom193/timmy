@@ -123,13 +123,17 @@ class Helper {
 	 */
 	public static function get_dimensions_for_srcset_size( $resize, $srcset_size ) {
 		// Get width and height for the additional src
-		if ( is_array( $srcset_size ) ) {
-			$width  = $srcset_size[0];
-			$height = isset( $srcset_size[1] ) ? $srcset_size[1] : 0;
-		} else {
-			$width  = (int) round( $resize[0] * $srcset_size );
-			$height = isset( $resize[1] ) ? (int) round( $resize[1] * $srcset_size ) : 0;
-		}
+		if (is_array($srcset_size) & count($srcset_size) > 0) {
+		    if (!isset($srcset_size[1]) || $srcset_size[1] === 0) {
+                $width  = $srcset_size[0];
+		        $height = (int) round($srcset_size[0] * $resize[1]/$resize[0]);
+            } elseif ($srcset_size[0] === 0 && isset($srcset_size[1]) && $srcset_size[1] > 0) {
+		        $width = (int) round($srcset_size[1] * $resize[0]/$resize[1]);
+                $height  = $srcset_size[1];
+            } else {
+		        return array(0, 0);
+            }
+        }
 
 		return array( $width, $height );
 	}

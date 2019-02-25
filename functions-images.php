@@ -208,6 +208,7 @@ if ( ! function_exists( 'get_timber_image_responsive_src' ) ) :
 			return $attributes;
 		}
 
+		//Return sizes from config file. Not Original sizes!!!
 		$img_size = Helper::get_image_size( $size );
 
 		if ( ! $img_size ) {
@@ -224,6 +225,8 @@ if ( ! function_exists( 'get_timber_image_responsive_src' ) ) :
 			$max_height,
 			$oversize,
 		) = Timmy::get_image_params( $timber_image, $img_size );
+
+		$img_size['resize'] = [$width, $height];
 
 		$srcset = array();
 
@@ -261,7 +264,7 @@ if ( ! function_exists( 'get_timber_image_responsive_src' ) ) :
 
 				// For the new source, we use the same $crop and $force values as the default image
 				$srcset[ $width_key ] = Timmy::resize(
-					$img_size,
+                    $img_size,
 					$file_src,
 					$width_intermediate,
 					$height_intermediate,

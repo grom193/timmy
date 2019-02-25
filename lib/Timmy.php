@@ -540,7 +540,9 @@ class Timmy {
 					// Restrict to height
 					$oversize['style_attr'] = 'height';
 				}
-			}
+			} elseif ($width > 0 && $height === 0) {
+                $height = (int) round( $width * ( $max_height / $max_width ) );
+            }
 		}
 
 		$crop  = Helper::get_crop_for_size( $img_size );
